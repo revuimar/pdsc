@@ -1,13 +1,4 @@
-testpoly: testpoly.o poly.o
-	g++ -g $^ -o $@
-
-poly.o: poly.cpp poly.h
-	g++ -g -c -Wall -pedantic -std=c++11 $< -o $@
-
-testpoly.o: testpoly.cpp poly.h
-	g++ -g -c -Wall -pedantic -std=c++11 $< -o $@
-
-.PHONY: clean
-
+testpoly: poly.cpp testpoly.cpp
+	g++ -g -Wall -pedantic -Werror -std=c++11 poly.cpp testpoly.cpp -o testpoly -lm
 clean:
-	-rm poly.o testpoly.o testpoly
+	-rm testpoly

@@ -10,7 +10,6 @@ class Polynomial {
 		map<unsigned int,double> expression;
 		double read(unsigned int);
 		void write(unsigned int,double);
-		unsigned int index;
 	public:
 		class Creference;
 		Polynomial(const double n = 0){

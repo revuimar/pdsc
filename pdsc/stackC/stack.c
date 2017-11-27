@@ -1,8 +1,13 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <errno.h>
 #include "stack.h"
+
+#define DEFAULT_SIZE 100
+#define DOUBLE_SIZE 2
 
 void init(stack* s, unsigned int sizeOfIncrement) {
 	s->top = 0;
-	s->sizeIncrement = sizeOfIncrement;
 	s->size = sizeOfIncrement * DEFAULT_SIZE;
 	if(s->size == 0) {
 		printf("stack size can't be 0\ninitialisation failed\n");
@@ -20,19 +25,18 @@ void destroy(stack* s) {
 }
 
 void push(stack* s, int element) {
-	if(!s){
+	if(!s) {
 		printf("ivalid arg\n");
 		exit(EXIT_FAILURE);
 		return;
 	}
 	if(s->top == s->size && s->top != 0) {
 		int* temp = NULL;
-		s->size += s->size;
+		s->size *= 2;
 		temp = realloc(s->array, s->size * sizeof(int));
-		printf("realloc of %ld bytes performed\n",s->size * sizeof(int));
+		printf("realloc of %d bytes performed\n",s->size * sizeof(int));
 		if (temp == NULL) {
 			printf("push error\nstack back to previous state\n");
-			s->size /= DOUBLE_SIZE;
 			perror("realloc fail");
 			exit(EXIT_FAILURE);
 		}
@@ -43,7 +47,7 @@ void push(stack* s, int element) {
 	printf("push performed\n");
 }
 
-int pop(stack* s){
+int pop(stack* s) {
 	int element = 0;
 	if(s != NULL)
 	{

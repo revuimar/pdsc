@@ -3,41 +3,29 @@
 #include "complex.h"
 using namespace std;
 
-Complex& Complex::operator=(const Complex& number) {
-	Real = number.Real;
-	Imaginary = number.Imaginary;
-	return *this;
-}
-
-Complex& Complex::operator=(double number) {
-	Real = number;
-	Imaginary = 0;
-	return *this;
-}
-
 Complex Complex::operator-() {
 	return Complex(0 - Real,0 - Imaginary);/*preventing getting output like "-0"*/
 }
 
-Complex& Complex::operator-=(Complex number) {
+Complex& Complex::operator-=(const Complex& number) {
 	Real -= number.Real;
 	Imaginary -= number.Imaginary;
 	return *this;
 }
 
-Complex& Complex::operator+=(Complex number) {
+Complex& Complex::operator+=(const Complex& number) {
 	Real += number.Real;
 	Imaginary += number.Imaginary;
 	return *this;
 }
 
-Complex& Complex::operator*=(Complex number) {
+Complex& Complex::operator*=(const Complex& number) {
 	Complex temp(Real,Imaginary);
 	Real = number.Real * temp.Real - (number.Imaginary * temp.Imaginary);
 	Imaginary = temp.Imaginary * number.Real + temp.Real * number.Imaginary;
 	return *this;
 }
-Complex& Complex::operator/=(Complex number) {
+Complex& Complex::operator/=(const Complex& number) {
 	double temp = (number*conjugate(number)).Real;
 	*this *= conjugate(number);
 	Real /= temp;
@@ -46,7 +34,7 @@ Complex& Complex::operator/=(Complex number) {
 }
 
 
-bool Complex::operator==(Complex number){
+bool Complex::operator==(const Complex& number){
 	return (this->Real == number.Real && this->Imaginary == number.Imaginary);
 }
 
@@ -91,7 +79,7 @@ ostream& operator<<(ostream& stream, const Complex& number) {
 	return stream;
 }
 
-Complex conjugate(Complex number) {
+Complex conjugate(const Complex& number) {
 	Complex n (number);
 	n.Imaginary = 0 - number.Imaginary;
 	return n;

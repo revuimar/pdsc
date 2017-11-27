@@ -37,14 +37,9 @@ Polynomial& Polynomial::operator*=(const Polynomial& poly){
 Polynomial operator+(const Polynomial& leftPoly, const Polynomial& rightPoly) {
 	Polynomial temp(leftPoly);
 	for(auto component : rightPoly.expression){
-		try{
-		if(!(temp[component.first] = temp[component.first] + component.second)){
+		if(!(temp.expression[component.first] +=  component.second)){
 			temp.expression.erase(component.first);
-		}
-		}
-		catch(...){
-			temp[component.first] = component.second;
-		}
+		}		
 	}
 	return temp;
 }

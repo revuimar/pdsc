@@ -1,15 +1,8 @@
-#include <stdlib.h>
-#include <stdio.h>
 #include <stdbool.h>
-#include <errno.h>
-
-#define DEFAULT_SIZE 100
-#define DOUBLE_SIZE 2
 
 typedef struct stack
 {
 	int top;
-	int sizeIncrement;
 	int* array;
 	int size;
 }stack;
