@@ -29,6 +29,12 @@ int main(int argc, char const *argv[])
 	g+=d+=s;
 	cout<<g<<"+=\n"<<d<<"+=\n"<<s<<endl;
 
+	g-=d-=s;
+	cout<<g<<"-=\n"<<d<<"-=\n"<<s<<endl;
+
+	g*=d*=s;
+	cout<<g<<"*=\n"<<d<<"*=\n"<<s<<endl;
+
 	
 
 	try{
@@ -55,6 +61,11 @@ int main(int argc, char const *argv[])
 	matrix test("matrix.txt");
 	cout<<"\nopen from file\n"<<test<<endl;
 
+	matrix test2(5,5);
+	ifstream test2file("matrix2.txt");
+	test2file>>test2;
+	test2file.close();
+	cout<<"\nvalues passed from file\n"<<test2<<endl;
 
 
 	return 0;

@@ -17,7 +17,7 @@ matrix::matrix(unsigned int i, unsigned int j, double** ncontent) {
 }
 matrix::~matrix() {
 	if(--data->ref == 0) {
-    	delete data;
+		delete data;
 	}
 }
 matrix::matrix(const matrix& m){
@@ -27,22 +27,22 @@ matrix::matrix(const matrix& m){
 matrix& matrix::operator=(const matrix& m)
 {
 	m.data->ref++;
-  	if(--data->ref == 0){
-    	delete data;
+	if(--data->ref == 0){
+		delete data;
 	}
-  	data = m.data;
-  	return *this;
+	data = m.data;
+	return *this;
 }
 double matrix::read(unsigned int i, unsigned int j) const
 {
 	checkRange(i,j);
- 	return data->content[i][j];
+	return data->content[i][j];
 }
 void matrix::write(unsigned int i, unsigned int j, double n)
 {
 	checkRange(i,j);
-  	data = data->detach();
-  	data->content[i][j] = n;
+	data = data->detach();
+	data->content[i][j] = n;
 }
 void matrix::displayReference() {
 	cout<<"reference: "<<this->data->ref<<endl;
@@ -61,15 +61,26 @@ ostream& operator<<(ostream& out, const matrix& m) {
 	}
 	return out;
 }
+istream& operator>> (istream& in, matrix& m) {
+	double temp = 0;
+	cout << m.data->rows << "x" << m.data->collumns << endl;
+	for (unsigned r = 0; r < m.data->rows; r++) {
+		for(unsigned c = 0; c < m.data->collumns; c++) {
+			in >> temp;
+			m.write(r,c,temp);
+		}
+	}
+	return in;
+}
 inline void matrix::checkRange (unsigned int i, unsigned int j) const {
-  if(data->rows < i || data->collumns < j){
-    throw indexesOutOfRange(i,j);
-  }
+	if(data->rows < i || data->collumns < j){
+		throw indexesOutOfRange(i,j);
+	}
 }
 inline void matrix::checkSize (const matrix& rhsM) const {
 	if(data->rows != rhsM.data->rows || data->collumns != rhsM.data->collumns){
-    	throw sizesNotCoherent(data->rows, data->collumns, rhsM.data->rows, rhsM.data->collumns);
-  	}
+		throw sizesNotCoherent(data->rows, data->collumns, rhsM.data->rows, rhsM.data->collumns);
+	}
 }
 inline void matrix::checkMultiplying (unsigned int i) const{
 	if(this->data->collumns != i){
@@ -77,34 +88,36 @@ inline void matrix::checkMultiplying (unsigned int i) const{
 	}
 }
 matrix matrix::operator+(const matrix& m) const{
-	checkSize(m);
-	matrix temp(m.data->rows,m.data->collumns);
-	for (unsigned i = 0; i < temp.data->rows; ++i)
-	{
-		for (unsigned j = 0; j < temp.data->collumns; ++j)
-		{
-			temp.data->content[i][j] = this->data->content[i][j] + m.data->content[i][j];
-		}
-	}
-	return temp;
+	matrix temp(*this);
+	return temp += m ;
 }
 matrix matrix::operator-(const matrix& m) const{
-	checkSize(m);
-	matrix temp(m.data->rows,m.data->collumns);
-	for (unsigned i = 0; i < temp.data->rows; ++i)
-	{
-		for (unsigned j = 0; j < temp.data->collumns; ++j)
-		{
-			temp.data->content[i][j] = this->data->content[i][j] - m.data->content[i][j];
-		}
-	}
-	return temp;
+	matrix temp(*this);
+	return temp -= m ;
 }
 matrix& matrix::operator+=(const matrix& m) {
-	return *this = *this + m;
+	checkSize(m);
+	data = data->detach();
+	for (unsigned i = 0; i < this->data->rows; ++i)
+	{
+		for (unsigned j = 0; j < this->data->collumns; ++j)
+		{
+			this->data->content[i][j] += m.data->content[i][j];
+		}
+	}
+	return *this;
 }
 matrix& matrix::operator-=(const matrix& m) {
-	return *this = *this - m;
+	checkSize(m);
+	data = data->detach();
+	for (unsigned i = 0; i < this->data->rows; ++i)
+	{
+		for (unsigned j = 0; j < this->data->collumns; ++j)
+		{
+			this->data->content[i][j] -= m.data->content[i][j];
+		}
+	}
+	return *this;
 }
 bool matrix::operator==(const matrix& m) const{
 	if(this->data->rows != m.data->rows || this->data->collumns != m.data->collumns){
@@ -148,7 +161,7 @@ matrix matrix::operator*(double n) const {
 
 
 matrix::Creference::operator double() const {
-    return matrix_cref.read(rows_cref,collumns_cref); 
+	return matrix_cref.read(rows_cref,collumns_cref); 
 }
 
 matrix::Creference& matrix::Creference::operator= (double n) {
@@ -162,69 +175,69 @@ matrix::Creference& matrix::Creference::operator= (const Creference& r) {
 
 
 matrix::container::container(unsigned int i, unsigned int j, double** ncontent) {
-    ref = 1;
-    rows = i;
-    collumns = j;
-    content = new double*[rows];
-    for (unsigned y=0; y<rows; y++) {
-        content[y] = new double[collumns];
-    }
-    for (unsigned y = 0; y < rows; y++) {
-      	for (unsigned x = 0; x < collumns; x++) {
-        	content[y][x] = ncontent[y][x];
-      }
-    }
+	ref = 1;
+	rows = i;
+	collumns = j;
+	content = new double*[rows];
+	for (unsigned y=0; y<rows; y++) {
+		content[y] = new double[collumns];
+	}
+	for (unsigned y = 0; y < rows; y++) {
+		for (unsigned x = 0; x < collumns; x++) {
+			content[y][x] = ncontent[y][x];
+		}
+	}
 }
 matrix::container::container(unsigned int i, unsigned int j, double n) {
-    ref = 1;
-    rows = i;
-    collumns = j;
-    content = new double*[rows];
-    for (unsigned y=0; y<rows; y++) {
-        content[y] = new double[collumns];
-    }
-    for (unsigned y = 0; y < rows; y++) {
-        for (unsigned x = 0; x < collumns; x++) {
-          content[y][x] = n;
-      }
-    }
+	ref = 1;
+	rows = i;
+	collumns = j;
+	content = new double*[rows];
+	for (unsigned y=0; y<rows; y++) {
+		content[y] = new double[collumns];
+	}
+	for (unsigned y = 0; y < rows; y++) {
+		for (unsigned x = 0; x < collumns; x++) {
+			content[y][x] = n;
+		}
+	}
 }
 matrix::container::container(unsigned int i, unsigned int j) {
-    ref = 1;
-    rows = i;
-    collumns = j;
-    content = new double*[rows];
-    for (unsigned y=0; y<rows; y++) {
-        content[y] = new double[collumns]();
-    }
+	ref = 1;
+	rows = i;
+	collumns = j;
+	content = new double*[rows];
+	for (unsigned y=0; y<rows; y++) {
+		content[y] = new double[collumns]();
+	}
 }
 matrix::container::container(const char filepath[]) {
 	ifstream file(filepath);
 	if(file.good()){
-	ref=1;
-	file>>rows>>collumns;
-	content = new double*[rows];
-    for (unsigned y=0; y<rows; y++) {
-        content[y] = new double[collumns];
-    }
-	for (unsigned r = 0; r < rows; r++) {
-		for(unsigned c = 0; c < collumns; c++) {
-			file>>content[r][c];
+		ref=1;
+		file>>rows>>collumns;
+		content = new double*[rows];
+		for (unsigned y=0; y<rows; y++) {
+			content[y] = new double[collumns];
 		}
-	}
+		for (unsigned r = 0; r < rows; r++) {
+			for(unsigned c = 0; c < collumns; c++) {
+				file>>content[r][c];
+			}
+		}
 	}
 	file.close();
 }
 matrix::container::~container() {
-    for (unsigned y = 0; y < rows; y++) {
-        delete [] content[y];
-    }
-    delete [] content;
+	for (unsigned y = 0; y < rows; y++) {
+		delete [] content[y];
+	}
+	delete [] content;
 }
 matrix::container* matrix::container::detach() {
-    if(ref == 1)
-      return this;
-    container* temp = new container(rows, collumns, content);
-    ref--;
-    return temp;
+	if(ref == 1)
+		return this;
+	container* temp = new container(rows, collumns, content);
+	ref--;
+	return temp;
 }
