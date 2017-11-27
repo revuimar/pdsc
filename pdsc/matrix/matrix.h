@@ -13,13 +13,14 @@ class matrix{
   class sizesNotCoherent;
   class sizesForMultiplyingNotAllowed;
 	class Creference;
-  matrix(ifstream& f);
+  matrix(const char filepath[]);
 	matrix(unsigned int i, unsigned int j);
   matrix(unsigned int i, unsigned int j, double n);
   matrix(unsigned int i, unsigned int j, double** ncontent);
 	matrix(const matrix& m);
   double read(unsigned int i, unsigned int j) const;
   void write(unsigned int i, unsigned int j, double n);
+  void displayReference();
 	~matrix();
 	matrix operator*(double n) const;
 	matrix& operator=(const matrix& m);
@@ -37,28 +38,19 @@ class matrix{
   Creference operator() (unsigned int i, unsigned int j);
 
 };
+
 class matrix::Creference {
   friend class matrix;
-
   matrix& matrix_cref;
   unsigned int rows_cref;
   unsigned int collumns_cref;
-
   Creference(matrix& m, unsigned int i, unsigned int j): matrix_cref(m), rows_cref(i), collumns_cref(j) {};
-public:
-	operator double() const {
-    return matrix_cref.read(rows_cref,collumns_cref); 
-  }
-	Creference& operator= (double n) {
-		matrix_cref.write(rows_cref,collumns_cref, n);
-		return *this;
-	};
-  Creference& operator= (const Creference& r)
-  {
-    return operator= ((double)r);
-  };
-	
+  public:
+  	operator double() const;
+  	Creference& operator= (double n);
+    Creference& operator= (const Creference& r);
 };
+
 class matrix::container {
   public:
   friend class matrix;
@@ -66,67 +58,14 @@ class matrix::container {
   unsigned int rows;
   unsigned int collumns;
   unsigned int ref;
-  container(unsigned int i, unsigned int j, double** ncontent)
-  {
-    ref = 1;
-    rows = i;
-    collumns = j;
-    content = new double*[rows];
-    for (unsigned y=0; y<rows; y++) {
-        content[y] = new double[collumns];
-    }
-    for (unsigned y = 0; y < rows; y++) {
-      	for (unsigned x = 0; x < collumns; x++) {
-        	content[y][x] = ncontent[y][x];
-      }
-    }
-  };
-  container(unsigned int i, unsigned int j, double n)
-  {
-    ref = 1;
-    rows = i;
-    collumns = j;
-    content = new double*[rows];
-    for (unsigned y=0; y<rows; y++) {
-        content[y] = new double[collumns];
-    }
-    for (unsigned y = 0; y < rows; y++) {
-        for (unsigned x = 0; x < collumns; x++) {
-          content[y][x] = n;
-      }
-    }
-  };
-  container(unsigned int i, unsigned int j)
-  {
-    ref = 1;
-    rows = i;
-    collumns = j;
-    content = new double*[rows];
-    for (unsigned y=0; y<rows; y++) {
-        content[y] = new double[collumns];
-    }
-    for (unsigned y = 0; y < rows; y++) {
-        for (unsigned x = 0; x < collumns; x++) {
-          content[y][x] = 0;
-      }
-    }
-  };
-  ~container(){
-    for (unsigned y = 0; y < rows; y++) {
-        delete [] content[y];
-    }
-    delete [] content;
-  };
-  container* detach()
-  {
-    if(ref == 1)
-      return this;
-    container* temp = new container(rows, collumns, content);
-    ref--;
-    return temp;
-  };
-  
+  container(unsigned int i, unsigned int j, double** ncontent);
+  container(unsigned int i, unsigned int j, double n);
+  container(unsigned int i, unsigned int j);
+  container(const char filepath[]);
+  ~container();
+  container* detach();
 };
+
 class matrix::sizesNotCoherent: public runtime_error {
   private:
     unsigned leftRows, leftCollumns;
@@ -153,6 +92,6 @@ class matrix::sizesForMultiplyingNotAllowed: public runtime_error {
   public:
     sizesForMultiplyingNotAllowed(unsigned lhsC, unsigned rhsR);
     virtual const char* what() const noexcept override;
-}; 
+};
 
 #endif
