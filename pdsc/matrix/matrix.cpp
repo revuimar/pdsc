@@ -1,34 +1,34 @@
 #include "matrix.h"
 #include <iostream>
+#include <fstream>
+#include <algorithm>
 using namespace std;
+matrix::matrix(ifstream& f) {
+	unsigned i = count(istreambuf_iterator<char>(f),istreambuf_iterator<char>(),'\n') + 1;
+	unsigned j = 1;
+	data = new container(i,j,1);
+	double temp;
+	for (unsigned r = 0; r < this->data->rows; r++) {
+		for(unsigned c = 0; c < this->data->collumns; c++) {
+			f>>temp;
+			this->write(r,c,temp);
+		}
+	}
 
+	
+}
 matrix::matrix(unsigned int i, unsigned int j) {
-	double** temp = new double*[i];
-    for (unsigned y=0; y<i; y++) {
-        temp[y] = new double[j];
-    }
-    for (unsigned y = 0; y < i; y++) {
-      	for (unsigned x = 0; x < j; x++) {
-        	temp[y][x] = 0;
-      }
-    }
-	data = new container(i,j,temp);
+	data = new container(i,j);
 }
 matrix::matrix(unsigned int i, unsigned int j, double n) {
-	double** temp = new double*[i];
-    for (unsigned y=0; y<i; y++) {
-        temp[y] = new double[j];
-    }
-    for (unsigned y = 0; y < i; y++) {
-      	for (unsigned x = 0; x < j; x++) {
-        	temp[y][x] = n;
-      }
-    }
-	data = new container(i,j,temp);
+	data = new container(i,j,n);
+}
+matrix::matrix(unsigned int i, unsigned int j, double** ncontent) {
+	data = new container(i,j,ncontent);
 }
 matrix::~matrix() {
 	if(--data->ref == 0) {
-		delete data;
+    	delete data;
 	}
 }
 matrix::matrix(const matrix& m){
@@ -71,21 +71,21 @@ ostream& operator<<(ostream& out, const matrix& m) {
 }
 inline void matrix::checkRange (unsigned int i, unsigned int j) const {
   if(data->rows < i || data->collumns < j){
-    throw sizeOutOfRange();
+    throw indexesOutOfRange(i,j);
   }
 }
-inline void matrix::checkSize (unsigned int i,unsigned int j) const {
-	if(data->rows < i || data->collumns < j){
-    	throw sizeOutOfRange();
+inline void matrix::checkSize (const matrix& rhsM) const {
+	if(data->rows != rhsM.data->rows || data->collumns != rhsM.data->collumns){
+    	throw sizesNotCoherent(data->rows, data->collumns, rhsM.data->rows, rhsM.data->collumns);
   	}
 }
 inline void matrix::checkMultiplying (unsigned int i) const{
 	if(this->data->collumns != i){
-		throw sizeForMultiplyingNotAllowed();
+		throw sizesForMultiplyingNotAllowed(this->data->collumns, i);
 	}
 }
 matrix matrix::operator+(const matrix& m) const{
-	checkSize(m.data->rows,m.data->collumns);
+	checkSize(m);
 	for (unsigned i = 0; i < this->data->rows; ++i)
 	{
 		for (unsigned j = 0; j < this->data->collumns; ++j)
@@ -96,7 +96,7 @@ matrix matrix::operator+(const matrix& m) const{
 	return *this;
 }
 matrix matrix::operator-(const matrix& m) const{
-	checkSize(m.data->rows,m.data->collumns);
+	checkSize(m);
 	for (unsigned i = 0; i < this->data->rows; ++i)
 	{
 		for (unsigned j = 0; j < this->data->collumns; ++j)
