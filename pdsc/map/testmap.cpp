@@ -5,7 +5,7 @@
 using namespace std;
 
 int main(void) {
-	//typedef unsigned int Key;
+	typedef unsigned int Key;
 	
 
 	Map<Key, Member> database;											

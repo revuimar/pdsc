@@ -16,9 +16,9 @@ class Member {
 		}
 	
 };
-class Key {
+/*class Key {
 	public:
 	unsigned int key;
 	Key(unsigned int k): key(k){};
 	~Key();
-};
+};*/
