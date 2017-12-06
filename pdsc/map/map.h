@@ -1,33 +1,65 @@
+#ifndef __Map_H__
+#define __Map_H__
 #include <iostream>
 #include <string>
 #include "list.h"
 using namespace std;
 
 
-template<class Key, class Member> class Map {
-	
+template<typename Key, typename Member> class Map {
 	public:
 		struct Pair {
 			Pair(Key k, Member m): K(k), M(m){};
-			Pair();
+			Pair() = default;
 			Key K;
 			Member M;
 		};
-		
+		Map();
+		Map(const Map<Key,Member>& m);
+
+		template <typename k, typename m> 
+		friend ostream& operator<<(ostream& out, Map<k,m>& map);
+		Map<Key,Member>& operator=(const Map<Key,Member>& m);
+		void add(Key k,const Member& m);
+		//Member& find(const Key& k);
+	private:
 		unsigned int size;
 		list<Pair> data;
-		Map();
-		Map(const Map& m);
-		~Map();
-
-		friend ostream& operator<<(ostream& out, const Map& m) {
-			for(m.data.goToHead(); m.data.moreData(); m.data.advance()){
-				out<<"ID :"<<m.data.getCurrentData().K;
-				out<<"PARAMETERS: "<<m.data.getCurrentData().M;
-			}
-			return out;
-		}
-		//Map& operator=(const map& m);
-		void add(const Key& k, const Member& m);
-		//Member& find(const Key& k);
 };
+/*
+template <typename Key, typename Member> Map<Key,Member>& Map<Key,Member>::operator= (const Map<Key,Member>& m) {
+    data = m.data;
+    size = m.size;
+    return *this;
+}
+
+template <typename k, typename m> 
+ostream& operator<<(ostream& out, Map<k,m>& map) {
+	map.data.goToHead();
+	for(; map.data.moreData(); map.data.advance()){
+		out<<"ID :"<<map.data.getCurrentData()->K;
+		out<<"PARAMETERS: "<<map.data.getCurrentData()->M;
+	}
+	return out;
+}
+
+template <typename Key, typename Member> Map<Key,Member>::Map() {
+	size = 0;
+}
+
+template<typename Key, typename Member> Map<Key,Member>::Map(const Map<Key,Member>& m) {
+	data = m.data;
+    size = m.size;
+}
+
+
+//friend ostream& operator<<(ostream& out, const Map& m);
+//Map& operator=(const map& m);
+template<typename Key, typename Member> void Map<Key,Member>::add(Key k, Member m){
+	Map<Key, Member>::Pair* temp;
+	temp = new Pair(k,m);
+	data.insert(temp);
+	size++;
+
+}*/
+#endif

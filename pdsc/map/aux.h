@@ -7,6 +7,11 @@ class Member {
 		string position;
 		unsigned int age;
 		Member();
+		Member(Member& m) {
+			name = m.name;
+			position = m.position;
+			age = m.age;
+		}
 		Member(string n, string p, unsigned a): name(n), position(p), age(a){};
 		friend ostream& operator<<(ostream& out, const Member& m) {
 			out<<m.name<<", ";
@@ -16,9 +21,3 @@ class Member {
 		}
 	
 };
-/*class Key {
-	public:
-	unsigned int key;
-	Key(unsigned int k): key(k){};
-	~Key();
-};*/

@@ -1,10 +1,10 @@
 #include <iostream>
-using namespace std;
 #include "list.h"
+using namespace std;
 
 template <typename T> list<T>::list() {
-	head = NULL;
-	current = NULL;
+	head = nullptr;
+	current = nullptr;
 }
 
 template <typename T> list<T>::~list() {
@@ -16,18 +16,18 @@ template <typename T> list<T>::~list() {
 	};
 }
 
-template <typename T> void list<T>::insert(const T& t) {
-	node *a = new node;
-	t->next = head;
-	head = a;
-	head->val = &t;
+template <typename T> void list<T>::insert(T* t) {
+	list<T>::node* temp = new node; //temp type = list<T>::node* 
+	temp->next = head;
+	head = temp;
+	head->val = t;
 }
 
 template <typename T> void list<T>::goToHead() {
 	current = head;
 }
 
-template <typename T> T& list<T>::getCurrentData() {
+template <typename T> T* list<T>::getCurrentData() {
 	return current->val;
 }
 
@@ -36,15 +36,10 @@ template <typename T> void list<T>::advance() {
 }
 
 template <typename T> bool list<T>::moreData() {
-	if (current) {
-		return true;
-	}
-	else {
-		return false;
-	}
+	return current != nullptr;
 }
 
-template <typename T> list<T>::list (const list& l) {
+template <typename T> list<T>::list (const list<T>& l) {
 	current=NULL;
 	node *src, **dst;
 	head = NULL;
@@ -63,7 +58,7 @@ template <typename T> list<T>::list (const list& l) {
     }
 }
 
-template <typename T> list<T>& list<T>::operator=(const list& l) {
+template <typename T> list<T>& list<T>::operator=(const list<T>& l) {
 	if (&l == this) {
 		return *this;
 	}
@@ -93,9 +88,9 @@ template <typename T> list<T>& list<T>::operator=(const list& l) {
 			if(source == l.current) {
 				current = *destination;
 			}
-			node *t = (*destination)->next;
+			node *temp = (*destination)->next;
 			delete (*destination);
-			(*destination) = t;
+			(*destination) = temp;
 		}
 	}
 	return *this;

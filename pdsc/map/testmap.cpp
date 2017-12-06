@@ -6,7 +6,6 @@ using namespace std;
 
 int main(void) {
 	typedef unsigned int Key;
-	
 
 	Map<Key, Member> database;											
 
@@ -26,5 +25,6 @@ int main(void) {
 
 	database = newDatabase;												
 	
-	cout << database << endl;*/											
+	cout << database << endl;*/		
+	return 0;									
 }
