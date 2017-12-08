@@ -4,7 +4,7 @@
 #include "aux.h"
 using namespace std;
 
-int main(void) {
+int main(int argc, char const *argv[]) {
 	typedef unsigned int Key;
 
 	Map<Key, Member> database;											
@@ -13,9 +13,9 @@ int main(void) {
 	database.add(510212881, Member("Adam Nowak", "storekeeper", 54));	
 	database.add(730505129, Member("Anna Zaradna", "secretary", 32));	
 
-	cout << database << endl;											
-/*
-	Map<ID, Member> newDatabase = database;							
+	cout << database << endl;									
+
+	Map<Key, Member> newDatabase = database;							
 	
 	Member* pE;
 	pE = newDatabase.find(510212881);									
@@ -25,6 +25,7 @@ int main(void) {
 
 	database = newDatabase;												
 	
-	cout << database << endl;*/		
+	cout << database << endl;
+	//delete *database;
 	return 0;									
 }

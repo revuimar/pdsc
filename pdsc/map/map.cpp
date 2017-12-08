@@ -9,8 +9,7 @@ template <typename Key, typename Member> Map<Key, Member>& Map<Key, Member>::ope
     return *this;
 }
 
-template <typename k, typename m> 
-ostream& operator<<(ostream& out, Map<k,m>& map) {
+template <typename k, typename m> ostream& operator<<(ostream& out, const Map<k,m>& map) {
 	map.data.goToHead();
 	for(; map.data.moreData(); map.data.advance()){
 		out<<"ID :"<<map.data.getCurrentData()->K;
