@@ -10,53 +10,52 @@ template<typename Key, typename Member> class Map {
 	public:
 		struct Pair {
 			Pair(const Key& k, const Member& m): K(k), M(m){};
+			Pair(const Pair& pair): K(pair.K), M(pair.M){};
 			Pair() = default;
-			Pair(const Pair&) = default;// Copy constructor
-  			Pair(Pair&&) = default;                    // Move constructor
-			Pair& operator=(const Pair&) & = default;  // Popy assignment operator
-			Pair& operator=(Pair&&) & = default;       // Move assignment operator
-			~Pair(){
-				K.~Key();
-				M.~Member();
-			} 
 			Key K;
 			Member M;
 		};
-		Map();
-		Map<Key,Member>(const Map<Key,Member>& m);
-  		Map(Map<Key,Member>&&) = default;                    // Move constructor
-  		Map<Key,Member>& operator=(Map<Key,Member>&&) & = default;       // Move assignment operator
-  		~Map();
+		list<Pair> data;
+	//public:
+		template <typename T> friend class list;
+		Map() = default;
+		Map(const Map& m);
+  		
+		template <typename _k, typename _m> friend ostream& operator<<(ostream& out, const Map<_k,_m>& map);
 
-		template <typename k, typename m> 
-		friend ostream& operator<<(ostream& out, const Map<k,m>& map);
-		Map<Key,Member>& operator=(const Map<Key,Member>& m);
+		Map& operator=(const Map& m);
+
 		void add(Key k,Member m);
+
 		Member* find(const Key& k);
 	
-		unsigned int size;
-		list<Pair> data;
+	//private:
+		
 };
 template <typename Key, typename Member> Member* Map<Key, Member>::find (const Key& k){
-	Member* temp;
 	data.goToHead();
 	for(; data.moreData(); data.advance()){
 		if (data.getCurrentData()->K == k) {
-			temp = &data.getCurrentData()->M;
+			return &data.getCurrentData()->M;
 		}	
 	}
-	return temp;
+	data.goToHead();
+	return nullptr;
 }
 
-template <typename Key, typename Member> Map<Key, Member>& Map<Key, Member>::operator= (const Map<Key,Member>& m) {
+template <typename Key, typename Member> 
+Map<Key,Member>& Map<Key,Member>::operator= (const Map<Key,Member>& m) {
     data = m.data;
-    size = m.size;
     return *this;
 }
 
-template <typename k, typename m>  ostream& operator<<(ostream& out, Map<k,m>& map) {
-	
+template <typename _k, typename _m>
+ostream& operator<<(ostream& out, Map<_k,_m>& map) {
 	map.data.goToHead();
+	if(!map.data.moreData()) {
+		out<<"map empty";
+		return out;
+	}
 	for(; map.data.moreData(); map.data.advance()){
 		out<<"ID :"<<map.data.getCurrentData()->K;
 		out<<" PARAMETERS: "<<map.data.getCurrentData()->M;
@@ -65,29 +64,16 @@ template <typename k, typename m>  ostream& operator<<(ostream& out, Map<k,m>& m
 	return out;
 }
 
-template <typename Key, typename Member> Map<Key,Member>::Map() {
-	size = 0;
-}
-template <typename Key, typename Member> Map<Key,Member>::~Map() {
-	data.goToHead();
-	delete data.getCurrentData();
-	size--;
-}
 
-template<typename Key, typename Member> Map<Key,Member>::Map(const Map<Key,Member>& m) {
+template<typename Key,typename Member>
+Map<Key,Member>::Map(const Map<Key,Member>& m) {
 	data = m.data;
-    size = m.size;
 }
 
-
-//friend ostream& operator<<(ostream& out, const Map& m);
-//Map& operator=(const map& m);
-template<typename Key, typename Member> void Map<Key,Member>::add(Key k,Member m){
-	//auto* temp;// Map<Key, Member>::Pair
-	auto* temp = new Pair(k,m);
+template<typename Key,typename Member>
+void Map<Key,Member>::add(Key k,Member m) {
+	auto temp = new Pair(k,m);
 	data.insert(temp);
-	size++;
-
 }
 
 

@@ -20,12 +20,6 @@ class Member {
 			age = m.age;
 		}
 		Member(string n, string p, unsigned a): name(n), position(p), age(a){};
-		Member(Member&&) = default;                    // Move constructor
-		Member& operator=(Member&&) & = default;       // Move assignment operator
-		virtual ~Member(){}; 		
-
-
-
 		friend ostream& operator<<(ostream& out, const Member& m) {
 			out<<m.name<<", ";
 			out<<m.position<<", ";

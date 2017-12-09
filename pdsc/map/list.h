@@ -13,7 +13,6 @@ private:
   node* head;
   node* current;
 public:
-  template<typename Key, typename Member> friend class Map;
   list ();
   list(const list<T>&);                            // Copy constructor
   list(list<T>&&) = default;                       // Move constructor
@@ -35,15 +34,14 @@ template <typename T> list<T>::list() {
 template <typename T> list<T>::~list() {
   while (head) {
     node *t = head->next;
-    t->val->~T();
-    delete t->val;
+    delete head->val;
     delete head;
     head = t;
   };
 }
 
 template <typename T> void list<T>::insert(T* t) {
-  list<T>::node* temp = new node; //temp type = list<T>::node* 
+  list<T>::node* temp = new node;
   temp->next = head;
   head = temp;
   head->val = t;
@@ -74,7 +72,8 @@ template <typename T> list<T>::list (const list<T>& l) {
   while (src)
   {
     *dst = new node;
-    (*dst)->val = src->val;
+    delete ((*dst)->val);
+    (*dst)->val = new T(*src->val);
     (*dst)->next = NULL;
     if(src == l.current) {
       current = *dst;
@@ -94,13 +93,13 @@ template <typename T> list<T>& list<T>::operator=(const list<T>& l) {
   while (source) {
     
     if(*destination != NULL) {
-      (*destination)->val = source->val;
+      (*destination)->val = new T(*source->val);
       source = source->next;
       destination = &((*destination)->next);
     }
     else {
-      (*destination) = new node;
-      (*destination)->val = source->val;
+      (*destination) = new node();
+      (*destination)->val = new T(*source->val);
       (*destination)->next = NULL;
       source = source->next;
       destination = &((*destination)->next);
