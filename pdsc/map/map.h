@@ -2,6 +2,7 @@
 #define __Map_H__
 #include <iostream>
 #include <string>
+#include <stdexcept>
 #include "list.h"
 using namespace std;
 
@@ -17,6 +18,7 @@ template<typename Key, typename Member> class Map {
 		};
 		list<Pair> data;
 	//public:
+		class keyNotUnique;
 		template <typename T> friend class list;
 		Map() = default;
 		Map(const Map& m);
@@ -31,6 +33,20 @@ template<typename Key, typename Member> class Map {
 	//private:
 		
 };
+
+template<typename Key,typename Member>
+class Map<Key,Member>::keyNotUnique: public runtime_error {
+private:
+	static string constructMessage(){
+		string msg;
+		msg.append("Not unique keys");
+		return msg;
+	}
+public:
+	keyNotUnique():runtime_error(constructMessage()) {};
+}; 
+
+
 template <typename Key, typename Member> Member* Map<Key, Member>::find (const Key& k){
 	data.goToHead();
 	for(; data.moreData(); data.advance()){
@@ -70,6 +86,13 @@ Map<Key,Member>::Map(const Map<Key,Member>& m) {
 
 template<typename Key,typename Member>
 void Map<Key,Member>::add(Key k,Member m) {
+	data.goToHead();
+	while(data.moreData()) {
+		if(data.getCurrentData()->K == k) {
+			throw keyNotUnique();
+		}
+		data.advance();
+	};
 	auto temp = new Pair(k,m);
 	data.insert(temp);
 }

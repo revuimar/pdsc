@@ -10,11 +10,6 @@ class Book {
 		unsigned noOfPages;
 		bool isOnShelf;
 		Book();
-		/*~Book(){
-			name.~string();
-			position.~string();
-			delete this;
-		}*/
 		Book(const Book& m) {
 			author = m.author;
 			noOfPages = m.noOfPages;
@@ -31,12 +26,5 @@ class Book {
 				out << "borrowed" << endl;
 			}
 			return out;
-		}
-
-		Book& operator= (const Book& m) {
-			author = m.author;
-			noOfPages = m.noOfPages;
-			isOnShelf = m.isOnShelf;
-			return *this;
 		}
 };
