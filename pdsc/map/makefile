@@ -5,7 +5,7 @@
 testmap: testmap.o
 	g++ -g $^ -o $@
 
-testmap.o: testmap.cpp list.h map.h aux.h
+testmap.o: testmap.cpp list.h map.h aux.h library.h
 	g++ -g -c -Wall -pedantic -std=c++11 $< -o $@
 
 .PHONY: clean

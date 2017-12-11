@@ -93,6 +93,7 @@ template <typename T> list<T>& list<T>::operator=(const list<T>& l) {
   while (source) {
     
     if(*destination != NULL) {
+      delete((*destination)->val);
       (*destination)->val = new T(*source->val);
       source = source->next;
       destination = &((*destination)->next);

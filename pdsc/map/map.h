@@ -22,7 +22,6 @@ template<typename Key, typename Member> class Map {
 		Map(const Map& m);
   		
 		template <typename _k, typename _m> friend ostream& operator<<(ostream& out, const Map<_k,_m>& map);
-
 		Map& operator=(const Map& m);
 
 		void add(Key k,Member m);
@@ -63,7 +62,6 @@ ostream& operator<<(ostream& out, Map<_k,_m>& map) {
 	map.data.goToHead();
 	return out;
 }
-
 
 template<typename Key,typename Member>
 Map<Key,Member>::Map(const Map<Key,Member>& m) {
